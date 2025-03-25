@@ -129,6 +129,12 @@ macro_rules! impl_serhex_strictconf_array {
                 // get iterator over chunks of expected size.  the underlying
                 // `SerHex<Strict>` implementation must raise an appropriate
                 // error if chunks are not of the proper size.
+                if hex.is_empty() {
+                    let expect = $len;
+                    let inner = $crate::types::ParseHexError::Size { expect, actual: 0 };
+                    let error = $crate::types::Error::from(inner);
+                    return Err(error.into());
+                }
                 let chunks = hex.chunks(hex.len() / $len);
                 let values =
                     chunks.filter_map(
