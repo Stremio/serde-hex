@@ -450,9 +450,10 @@ where
     };
 
     let hexsize = size_hint * 2;
-    if src.len() % hexsize == 0 && hexsize != 0 {
+    if src.len() % hexsize == 0 && hexsize != 0 && !src.is_empty() {
+        // if src.len() % hexsize == 0 {
         let mut buff = Vec::with_capacity(src.len() / hexsize);
-        // if we call chunks with chunk_size = 0, the method will panic!
+        // if chunk size is 0 then chunks() will panic!
         for chunk in src.chunks(hexsize) {
             let elem = S::from_hex_raw(chunk).map_err(E::custom)?;
             buff.push(elem);

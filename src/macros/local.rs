@@ -126,16 +126,21 @@ macro_rules! impl_serhex_strictconf_array {
                 } else {
                     raw
                 };
-                // get iterator over chunks of expected size.  the underlying
+
+                let chunk_size = hex.len() / $len;
+                // get iterator over chunks of expected size. the underlying
                 // `SerHex<Strict>` implementation must raise an appropriate
                 // error if chunks are not of the proper size.
-                if hex.is_empty() {
+                // We could have used `.max(1)`, however, this approach provides much better
+                // error message
+                if hex.is_empty() || chunk_size == 0 {
                     let expect = $len;
                     let inner = $crate::types::ParseHexError::Size { expect, actual: 0 };
                     let error = $crate::types::Error::from(inner);
                     return Err(error.into());
                 }
-                let chunks = hex.chunks(hex.len() / $len);
+
+                let chunks = hex.chunks(chunk_size.max(1));
                 let values =
                     chunks.filter_map(
                         |chunk| match <T as $crate::SerHex<$crate::Strict>>::from_hex(chunk) {
@@ -150,7 +155,14 @@ macro_rules! impl_serhex_strictconf_array {
                         // error is found.  this is a workaround for the fact
                         // that `aray_init::from_iter` consumes the iterator.
                         // need to find a better workaround.
-                        let chunks = hex.chunks(hex.len() / $len);
+                        let chunks_size = hex.len() / $len;
+                        if hex.is_empty() || chunk_size == 0 {
+                            let expect = $len;
+                            let inner = $crate::types::ParseHexError::Size { expect, actual: 0 };
+                            let error = $crate::types::Error::from(inner);
+                            return Err(error.into());
+                        }
+                        let chunks = hex.chunks(chunks_size);
                         let mut errors = chunks.filter_map(|chunk| {
                             match <T as $crate::SerHex<$crate::Strict>>::from_hex(chunk) {
                                 Ok(_) => None,
