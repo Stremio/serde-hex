@@ -127,15 +127,20 @@ macro_rules! impl_serhex_strictconf_array {
                     raw
                 };
 
+                // 40 hex chars / 20 bytes = chunk of 2
+                // 0 hex chars / 20 bytes = chunk of 0 = PANIC!
+                // 2 hex chars / 20 bytes = chunk of 10 = PANIC!
                 let chunk_size = hex.len() / $len;
                 // get iterator over chunks of expected size. the underlying
                 // `SerHex<Strict>` implementation must raise an appropriate
                 // error if chunks are not of the proper size.
                 // We could have used `.max(1)`, however, this approach provides much better
                 // error message
-                if hex.is_empty() || chunk_size == 0 {
+                if chunk_size == 0 {
                     let expect = $len;
-                    let inner = $crate::types::ParseHexError::Size { expect, actual: 0 };
+                    let hex_stripped = hex.strip_prefix(b"0x").unwrap_or(hex);
+                    let actual = hex_stripped.len() / 2;
+                    let inner = $crate::types::ParseHexError::Size { expect, actual };
                     let error = $crate::types::Error::from(inner);
                     return Err(error.into());
                 }
@@ -158,7 +163,8 @@ macro_rules! impl_serhex_strictconf_array {
                         let chunks_size = hex.len() / $len;
                         if hex.is_empty() || chunk_size == 0 {
                             let expect = $len;
-                            let inner = $crate::types::ParseHexError::Size { expect, actual: 0 };
+                            let actual = hex.len() / $len;
+                            let inner = $crate::types::ParseHexError::Size { expect, actual };
                             let error = $crate::types::Error::from(inner);
                             return Err(error.into());
                         }

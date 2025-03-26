@@ -6,7 +6,7 @@ use std::{error, fmt, io, result};
 pub type Result<T> = result::Result<T, Error>;
 
 /// error raised during hexadecimal parsing operations
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ParseHexError {
     /// hexadecimal buffer was outside allowed range
     Range {

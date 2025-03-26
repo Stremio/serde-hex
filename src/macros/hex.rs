@@ -152,7 +152,7 @@ macro_rules! impl_serhex_bytearray {
 
 #[cfg(test)]
 mod tests {
-    use {
+    use crate::{
         Compact, CompactCap, CompactCapPfx, CompactPfx, SerHex, Strict, StrictCap, StrictCapPfx,
         StrictPfx,
     };

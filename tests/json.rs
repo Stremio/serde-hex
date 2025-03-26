@@ -1,10 +1,7 @@
 //! Test of `SerHex` functionality with `serde-json`.
-extern crate stremio_serde_hex;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-
-use stremio_serde_hex::{CompactPfx, SerHex, StrictPfx};
+use serde::{Deserialize, Serialize};
+use serde_json::{from_value, json};
+use stremio_serde_hex::{CompactPfx, SerHex, Strict, StrictPfx};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 struct Foo {
@@ -48,4 +45,32 @@ fn deserialize_owned() {
         bin: 0x1234,
     };
     assert_eq!(foo, exp);
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct Hash(#[serde(with = "SerHex::<Strict>")] pub [u8; 20]);
+
+#[test]
+fn test_info_has_for_zero_sized_chunk() {
+    let empty = json!("");
+
+    let err = from_value::<Hash>(empty).expect_err("Should error with Size expected 20, actual 0");
+    assert_eq!(&err.to_string(), "expected buff size `20` got `0`");
+
+    let prefix_only = json!("0x");
+    let err = from_value::<Hash>(prefix_only).expect_err("Should error");
+    assert_eq!(&err.to_string(), "expected buff size `20` got `0`");
+
+    let four_chars = json!("df38");
+    let err = from_value::<Hash>(four_chars).expect_err("Should error");
+    assert_eq!(&err.to_string(), "expected buff size `20` got `2`");
+
+    let twenty_chars = json!("df389295484b3059a472");
+    let err =
+        from_value::<Hash>(twenty_chars).expect_err("Should error with Size expected 20, actual 10");
+    assert_eq!(&err.to_string(), "expected buff size `2` got `1`");
+
+    let full_20 = json!("df389295484b3059a4726dc6d8a57f71bb5f4c81");
+    let _hash = from_value::<Hash>(full_20).expect("Hash should be ok");
 }

@@ -1,7 +1,7 @@
 //! various helper functions.
-use std::borrow::Borrow;
-use std::io;
-use types::{Error, ParseHexError};
+use std::{borrow::Borrow, io};
+
+use crate::types::{Error, ParseHexError};
 
 /// convert a byte from a hex string to its numeric value.
 /// use the `tobyte` function to convert a pair of hex characters
@@ -23,9 +23,9 @@ pub fn intoval(c: u8) -> Result<u8, ParseHexError> {
     //   MIT/APACHE (at your option)
     // ------------------------------------------------------
     match c {
-        b'A'...b'F' => Ok(c - b'A' + 10),
-        b'a'...b'f' => Ok(c - b'a' + 10),
-        b'0'...b'9' => Ok(c - b'0'),
+        b'A'..=b'F' => Ok(c - b'A' + 10),
+        b'a'..=b'f' => Ok(c - b'a' + 10),
+        b'0'..=b'9' => Ok(c - b'0'),
         _ => {
             let val = c as char;
             Err(ParseHexError::Char { val })
@@ -38,9 +38,9 @@ pub fn intoval(c: u8) -> Result<u8, ParseHexError> {
 #[inline]
 pub fn fromval(val: u8) -> u8 {
     match val {
-        0xa...0xf => val - 0xa + b'a',
-        0x0...0x9 => val + b'0',
-        _ => panic!("value outside range 0x0...0xf"),
+        0xa..=0xf => val - 0xa + b'a',
+        0x0..=0x9 => val + b'0',
+        _ => panic!("value outside range 0x0..=0xf"),
     }
 }
 
@@ -49,9 +49,9 @@ pub fn fromval(val: u8) -> u8 {
 #[inline]
 pub fn fromvalcaps(val: u8) -> u8 {
     match val {
-        0xA...0xF => val - 0xa + b'A',
-        0x0...0x9 => val + b'0',
-        _ => panic!("value outside range 0x0...0xf"),
+        0xA..=0xF => val - 0xa + b'A',
+        0x0..=0x9 => val + b'0',
+        _ => panic!("value outside range 0x0..=0xf"),
     }
 }
 
@@ -159,9 +159,10 @@ where
 
 #[cfg(test)]
 mod tests {
+    use super::{frombyte, fromhex, intobyte, intohex};
+
     #[test]
     fn hex_bytes() {
-        use utils::{frombyte, intobyte};
         for i in 0..255u8 {
             let h = frombyte(i);
             let b = intobyte(h.0, h.1).unwrap();
@@ -178,7 +179,6 @@ mod tests {
 
     #[test]
     fn hex_strings() {
-        use utils::{fromhex, intohex};
         let hv = [
             "ff",
             "aa",
