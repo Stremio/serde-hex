@@ -6,7 +6,7 @@ use std::{error, fmt, io, result};
 pub type Result<T> = result::Result<T, Error>;
 
 /// error raised during hexadecimal parsing operations
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ParseHexError {
     /// hexadecimal buffer was outside allowed range
     Range {
@@ -84,14 +84,7 @@ impl fmt::Display for Error {
 
 // implement the standard error trait for hexadecimal errors.
 impl error::Error for Error {
-    fn description(&self) -> &str {
-        match *self {
-            Error::IoError(ref err) => err.description(),
-            Error::Parsing(ref err) => err.description(),
-        }
-    }
-
-    fn cause(&self) -> Option<&error::Error> {
+    fn cause(&self) -> Option<&dyn error::Error> {
         match *self {
             Error::IoError(ref err) => Some(err),
             Error::Parsing(ref err) => Some(err),

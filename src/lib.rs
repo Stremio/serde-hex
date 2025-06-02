@@ -6,12 +6,10 @@
 //! `serde-derive`:
 //!
 //! ```rust
-//! #[macro_use]
-//! extern crate serde_derive;
-//! extern crate stremio_serde_hex;
 //! use stremio_serde_hex::{SerHex,StrictPfx};
+//! use serde::{Serialize, Deserialize};
 //!
-//! #[derive(Debug,Serialize,Deserialize)]
+//! #[derive(Debug, Serialize, Deserialize)]
 //! struct Foo {
 //!    #[serde(with = "SerHex::<StrictPfx>")]
 //!    bar: [u8;32]
@@ -35,10 +33,6 @@
 //!
 //!
 #![warn(missing_docs)]
-
-extern crate array_init;
-extern crate serde;
-extern crate smallvec;
 
 #[macro_use]
 pub mod macros;
@@ -180,13 +174,10 @@ where
 /// automatically.
 ///
 /// ```rust
-/// # #[macro_use]
-/// # extern crate serde_derive;
-/// # extern crate serde_json;
-/// # extern crate stremio_serde_hex;
+/// # use serde::{Serialize, Deserialize};
 /// # use stremio_serde_hex::{SerHexOpt,CompactPfx};
 /// #
-/// #[derive(Debug,PartialEq,Eq,Serialize,Deserialize)]
+/// #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 /// struct MaybeNum {
 ///     #[serde(with = "SerHexOpt::<CompactPfx>")]
 ///     num: Option<u64>
@@ -325,13 +316,10 @@ where
 /// encoding.
 ///
 /// ```rust
-/// # #[macro_use]
-/// # extern crate serde_derive;
-/// # extern crate serde_json;
-/// # extern crate stremio_serde_hex;
+/// # use serde::{Serialize, Deserialize};
 /// # use stremio_serde_hex::{SerHexSeq,StrictPfx};
 /// #
-/// #[derive(Debug,PartialEq,Eq,Serialize,Deserialize)]
+/// #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 /// struct Bytes(#[serde(with = "SerHexSeq::<StrictPfx>")] Vec<u8>);
 ///
 /// # fn main() {
@@ -446,11 +434,14 @@ where
     let src = if raw.starts_with(b"0x") {
         &raw[2..]
     } else {
-        &raw[..]
+        &raw
     };
+
     let hexsize = size_hint * 2;
-    if src.len() % hexsize == 0 {
+    if src.len() % hexsize == 0 && hexsize != 0 && !src.is_empty() {
+        // if src.len() % hexsize == 0 {
         let mut buff = Vec::with_capacity(src.len() / hexsize);
+        // if chunk size is 0 then chunks() will panic!
         for chunk in src.chunks(hexsize) {
             let elem = S::from_hex_raw(chunk).map_err(E::custom)?;
             buff.push(elem);

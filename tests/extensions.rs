@@ -1,9 +1,5 @@
 //! Test of extension traits (e.g.; `SerHexSeq`).
-extern crate stremio_serde_hex;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-
+use serde::{Deserialize, Serialize};
 use stremio_serde_hex::{SerHexOpt, SerHexSeq, StrictPfx};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
