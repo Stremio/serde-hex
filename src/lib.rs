@@ -1,18 +1,18 @@
 //! The `serde-hex` crate contains various utilities for Serialization/Deserialization
 //! of hexadecimal values using [`serde`](https://crates.io/crates/serde).
 //!
-//! The core utility of this crate is the `SerHex` trait.  Once implemented, `SerHex`
+//! The core utility of this crate is the `SerHex` trait. Once implemented, `SerHex`
 //! allows for easy configuration of hexadecimal serialization/deserialization with
 //! `serde-derive`:
 //!
 //! ```rust
-//! use stremio_serde_hex::{SerHex,StrictPfx};
+//! use stremio_serde_hex::{SerHex, StrictPfx};
 //! use serde::{Serialize, Deserialize};
 //!
 //! #[derive(Debug, Serialize, Deserialize)]
 //! struct Foo {
 //!    #[serde(with = "SerHex::<StrictPfx>")]
-//!    bar: [u8;32]
+//!    bar: [u8; 32]
 //! }
 //!
 //! # fn main() {}
@@ -40,15 +40,16 @@ pub mod config;
 pub mod types;
 pub mod utils;
 
+#[doc(inline)]
 pub use config::*;
+#[doc(inline)]
 pub use types::{Error, ParseHexError};
 
-use serde::__private::PhantomData;
-use serde::de::Visitor;
-use serde::{Deserializer, Serializer};
-use smallvec::SmallVec;
-use std::iter::FromIterator;
+use core::{iter::FromIterator, marker::PhantomData};
 use std::{error, fmt, io};
+
+use serde::{de::Visitor, Deserializer, Serializer};
+use smallvec::SmallVec;
 
 /// Trait specifying custom serialization and deserialization logic from a
 /// hexadecimal string to some arbitrary type.  This trait can be used to apply
