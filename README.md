@@ -1,4 +1,6 @@
-# serde-hex [![Build Status](https://travis-ci.org/forrest-marshall/serde-hex.svg?branch=master)](https://travis-ci.org/forrest-marshall/serde-hex) ![Crates.io](https://img.shields.io/crates/v/serde-hex.svg) [![](https://img.shields.io/badge/rust-docs-blue.svg)](https://docs.rs/serde-hex/)
+# stremio-serde-hex ![Crates.io](https://img.shields.io/crates/v/stremio-serde-hex.svg) [![](https://img.shields.io/badge/rust-docs-blue.svg)](https://docs.rs/stremio-serde-hex/)
+
+### Fork of `serde-hex` due to the crate being unmaintained
 
 Rust crate for easy and versatile serialization/deserialization of hexadecimal values.
 
@@ -16,9 +18,9 @@ Here is a simple example using [`serde_derive`](https://crates.io/crates/serde_d
 
 ```rust
 
-use serde_hex::{SerHex,StrictPfx,CompactPfx};
+use stremio_serde_hex::{SerHex, StrictPfx, CompactPfx};
 
-#[derive(Debug,PartialEq,Eq,Serialize,Deserialize)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 struct Foo {
     #[serde(with = "SerHex::<StrictPfx>")]
     bar: [u8;4],

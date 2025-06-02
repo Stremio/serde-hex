@@ -1,19 +1,18 @@
 [package]
 name = "stremio-serde-hex"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Forrest Marshall <fourthetrees@gmail.com>"]
 description = "Hexadecimal encoding/decoding with serde."
-documentation = "https://docs.rs/serde-hex"
-repository = "https://github.com/forrest-marshall/serde-hex.git"
+documentation = "https://docs.rs/stremio-serde-hex"
+repository = "https://github.com/Stremio/serde-hex"
 keywords = ["serde","hex","hexadecimal"]
 license = "MIT/Apache-2.0"
-readme = "README.md"
 
 edition = "2021"
 
 [dependencies]
-array-init = "0.0.4"
-smallvec = "0.6"
+array-init = "2"
+smallvec = { version = "1", features = ["write"] }
 serde = "1.0"
 
 [dev-dependencies]
