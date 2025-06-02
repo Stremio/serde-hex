@@ -1,10 +1,10 @@
 //! Test of extension traits (e.g.; `SerHexSeq`).
-extern crate serde_hex;
+extern crate stremio_serde_hex;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
 
-use serde_hex::{SerHexOpt, SerHexSeq, StrictPfx};
+use stremio_serde_hex::{SerHexOpt, SerHexSeq, StrictPfx};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 struct Ext {
@@ -46,6 +46,20 @@ fn deserialize_owned() {
     let exp = Ext {
         seq: vec![0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef],
         opt: Some(0xaa),
+    };
+    assert_eq!(ext, exp);
+}
+
+#[test]
+fn deserialize_none() {
+    let ser = serde_json::json!({
+        "seq": "0x0123456789abcdef",
+        "opt": null
+    });
+    let ext = serde_json::from_value::<Ext>(ser).unwrap();
+    let exp = Ext {
+        seq: vec![0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef],
+        opt: None,
     };
     assert_eq!(ext, exp);
 }
