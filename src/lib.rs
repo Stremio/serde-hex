@@ -45,8 +45,7 @@ pub use config::*;
 #[doc(inline)]
 pub use types::{Error, ParseHexError};
 
-use core::{iter::FromIterator, marker::PhantomData};
-use std::{error, fmt, io};
+use std::{error, fmt, io, marker::PhantomData};
 
 use serde::{de::Visitor, Deserializer, Serializer};
 use smallvec::SmallVec;
