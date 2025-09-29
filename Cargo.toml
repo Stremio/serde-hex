@@ -1,6 +1,6 @@
 [package]
 name = "stremio-serde-hex"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Forrest Marshall <fourthetrees@gmail.com>"]
 description = "Hexadecimal encoding/decoding with serde."
 documentation = "https://docs.rs/stremio-serde-hex"
