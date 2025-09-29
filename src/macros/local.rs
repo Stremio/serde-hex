@@ -17,6 +17,8 @@ macro_rules! impl_serhex_uint {
             where
                 D: ::std::io::Write,
             {
+                // for types like u8/u16/u32/u64 this gives a warning, so we silence it here.
+                #[allow(unnecessary_transmutes)]
                 let bytes: [u8; $bytes] = unsafe { ::std::mem::transmute(self.to_be()) };
                 into_hex_bytearray!(bytes, dst, $bytes)?;
                 Ok(())
@@ -29,6 +31,8 @@ macro_rules! impl_serhex_uint {
                     from_hex_bytearray!(src, $bytes);
                 match rslt {
                     Ok(buf) => {
+                        // for types like u8/u16/u32/u64 this gives a warning, so we silence it here.
+                        #[allow(unnecessary_transmutes)]
                         let val: $type = unsafe { ::std::mem::transmute(buf) };
                         Ok(Self::from_be(val))
                     }

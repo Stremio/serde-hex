@@ -253,6 +253,7 @@ mod tests {
 
     #[test]
     fn implementation() {
+        #[allow(dead_code)]
         struct Bar([u8; 36]);
         impl_newtype_bytearray_ext!(Bar, 36);
     }
